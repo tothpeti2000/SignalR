@@ -1,4 +1,5 @@
 ﻿using ChattR.Data;
+using ChattR.Hubs;
 using ChattR.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -52,6 +53,8 @@ namespace ChattR
                 configuration.RootPath = "ClientApp/dist";
             });
 
+            services.AddSignalR();
+
             // Ez a parancs csak azért szükséges, hogy a laborgépeken, https nélkül is működjön az authentikáció
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -95,6 +98,7 @@ namespace ChattR
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChattRHub>("/chattrhub");
             });
 
             app.UseSpa(spa =>
