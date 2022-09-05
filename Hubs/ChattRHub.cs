@@ -65,6 +65,20 @@ namespace ChattR.Hubs
 
             return base.OnDisconnectedAsync(exception);
         }
+
+        public async Task SendMessageToLobby(string message)
+        {
+            var messageInstance = new Message
+            {
+                SenderId = Context.UserIdentifier,
+                SenderName = Context.User.Identity.Name,
+                Text = message,
+                PostedDate = DateTimeOffset.Now
+            };
+
+            Lobby.Messages.Add(messageInstance);
+            await Clients.Group(LobbyRoomName).RecieveMessage(messageInstance);
+        }
     }
 
     public class HubRoom
