@@ -1,13 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Room, User, Message } from '../models';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Room, User, Message } from "../models";
 
 @Component({
-  selector: 'app-lobby',
-  templateUrl: './lobby.component.html',
-  styleUrls: ['./lobby.component.css']
+  selector: "app-lobby",
+  templateUrl: "./lobby.component.html",
+  styleUrls: ["./lobby.component.css"],
 })
 export class LobbyComponent implements OnInit, OnDestroy {
-  activeTab: 'rooms' | 'peeps' = 'peeps';
+  activeTab: "rooms" | "peeps" = "peeps";
 
   rooms: Room[];
   peeps: User[];
@@ -29,32 +29,116 @@ export class LobbyComponent implements OnInit, OnDestroy {
   ngOnInit() {
     setTimeout(() => {
       this.lobbyMessages = [
-        { postedDate: "2018-10-08T10:12:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:13:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087", senderName: "Jamie Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087", senderName: "Jamie Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:13:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087", senderName: "Jamie Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087", senderName: "Jamie Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello! This message is quite a little bit longer than the others just like this." },
-        { postedDate: "2018-10-08T10:13:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087", senderName: "Jamie Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087", senderName: "Jamie Doe", text: "Hello!" },
-        { postedDate: "2018-10-08T10:14:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello!" }
+        {
+          postedDate: "2018-10-08T10:12:28.779Z",
+          senderId: "asdasd",
+          senderName: "Johnny Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:13:28.779Z",
+          senderId: "asdasd",
+          senderName: "Johnny Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "asdasd",
+          senderName: "Johnny Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087",
+          senderName: "Jamie Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087",
+          senderName: "Jamie Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "asdasd",
+          senderName: "Johnny Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:13:28.779Z",
+          senderId: "asdasd",
+          senderName: "Johnny Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "asdasd",
+          senderName: "Johnny Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087",
+          senderName: "Jamie Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087",
+          senderName: "Jamie Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "asdasd",
+          senderName: "Johnny Doe",
+          text: "Hello! This message is quite a little bit longer than the others just like this.",
+        },
+        {
+          postedDate: "2018-10-08T10:13:28.779Z",
+          senderId: "asdasd",
+          senderName: "Johnny Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "asdasd",
+          senderName: "Johnny Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087",
+          senderName: "Jamie Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "57d7e0a3-94ad-4f06-8340-82ce874f7087",
+          senderName: "Jamie Doe",
+          text: "Hello!",
+        },
+        {
+          postedDate: "2018-10-08T10:14:28.779Z",
+          senderId: "asdasd",
+          senderName: "Johnny Doe",
+          text: "Hello!",
+        },
       ].reverse();
     }, 1000);
 
     setTimeout(() => {
-      this.recieveMessage({ postedDate: "2018-10-08T10:14:28.779Z", senderId: "asdasd", senderName: "Johnny Doe", text: "Hello!" });
-    }, 3000);
+      this.recieveMessage({
+        postedDate: "2018-10-08T10:14:28.779Z",
+        senderId: "asdasd",
+        senderName: "Johnny Doe",
+        text: "Hello!",
+      });
+    }, 10000);
   }
 
-  ngOnDestroy() {
-  }
+  ngOnDestroy() {}
 
   recieveMessage(message: Message) {
     // TODO: beérkező üzenet kezelése

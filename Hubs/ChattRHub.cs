@@ -39,8 +39,7 @@ namespace ChattR.Hubs
             // Megvizsgálhatjuk a Client objekumot: ezen keresztül érjük el a hívó klienst (Caller),
             // adott klienseket tudunk megszólítani pl. ConnectionId vagy UserIdentifier alapján, vagy
             // használhatjuk a beépített csoport (Group) mechanizmust felhasználói csoportok kezelésére.
-            await Clients
-                .Group(LobbyRoomName)
+            await Clients.Group(LobbyRoomName)
                 // A Client típusunk a fent megadott típusparaméter, ezeket a függvényeket tudjuk
                 // meghívni a kliense(ke)n.
                 .UserEntered(user);
@@ -61,7 +60,8 @@ namespace ChattR.Hubs
             }
                 
             // TODO: később a saját szobakezelés kapcsán is kezelni kell a kilépő klienseket
-            Clients.Group(LobbyRoomName).UserLeft(Context.UserIdentifier);
+            Clients.Group(LobbyRoomName)
+                .UserLeft(Context.UserIdentifier);  
 
             return base.OnDisconnectedAsync(exception);
         }
