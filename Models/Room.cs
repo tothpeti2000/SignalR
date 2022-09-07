@@ -11,4 +11,10 @@ namespace ChattR.Models
         public DateTimeOffset CreationDate { get; set; }
         public bool RequiresPasskey { get; set; }
     }
+
+    public class RoomDto
+    {
+        public string Name { get; set; }
+        public string Passkey { get; set; }
+    }
 }

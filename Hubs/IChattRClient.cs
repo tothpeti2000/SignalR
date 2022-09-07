@@ -13,5 +13,7 @@ namespace ChattR.Hubs
         Task RecieveMessage(Message message);
         Task SetUsers(List<User> users);
         Task SetMessages(List<Message> messages);
+        Task SetRooms(List<Room> rooms);
+        Task EnterRoom(Room room);
     }
 }

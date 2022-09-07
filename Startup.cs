@@ -43,7 +43,7 @@ namespace ChattR
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             // A DefaultAuthenticateScheme beállítása biztosítja, hogy megfelelően működik az Authorizáció signalR esetében is
-            services.AddAuthentication(o=>o.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme)
+            services.AddAuthentication(o => o.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme)
                 .AddIdentityServerJwt();
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -92,6 +92,7 @@ namespace ChattR
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
