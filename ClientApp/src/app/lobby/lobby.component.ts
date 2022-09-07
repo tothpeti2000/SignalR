@@ -1,6 +1,9 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
+import { Router } from "@angular/router";
 import * as signalR from "@microsoft/signalr";
 import { Message, Room, User } from "../models";
+import { RoomDto } from "../models/room";
+import { AlertService } from "../services/alert.service";
 import { HubBuilderService } from "../services/hub-builder.service";
 
 @Component({
@@ -8,7 +11,7 @@ import { HubBuilderService } from "../services/hub-builder.service";
   templateUrl: "./lobby.component.html",
   styleUrls: ["./lobby.component.css"],
 })
-export class LobbyComponent implements OnInit, OnDestroy {
+export class LobbyComponent implements OnDestroy {
   activeTab: "rooms" | "peeps" = "peeps";
 
   rooms: Room[];
@@ -17,6 +20,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
   newRoomName: string;
   newRoomIsPrivate = false;
   newRoomPasskey: string;
+  duplicateRoomName = false;
 
   lobbyMessages: Message[];
   lobbyLoading = false;
@@ -25,8 +29,12 @@ export class LobbyComponent implements OnInit, OnDestroy {
 
   connection: signalR.HubConnection;
 
-  constructor(hubBuilder: HubBuilderService) {
-    this.connection = hubBuilder.getConnection();
+  constructor(
+    private hubBuilder: HubBuilderService,
+    private router: Router,
+    private alertService: AlertService
+  ) {
+    this.connection = this.hubBuilder.getConnection();
 
     // Register the server-sent event handlers
     this.connection.on("SetUsers", (users) => this.setUsers(users));
@@ -36,15 +44,19 @@ export class LobbyComponent implements OnInit, OnDestroy {
     this.connection.on("RecieveMessage", (message) =>
       this.recieveMessage(message)
     );
-    // TODO: Add additional event handlers
+    this.connection.on("RoomCreated", (room) => this.roomCreated(room));
+    this.connection.on("SetRooms", (rooms) => this.setRooms(rooms));
+    this.connection.on("EnterRoom", (room) => this.enterRoom(room));
+    this.connection.on("RoomAbandoned", (roomName) =>
+      this.roomAbandoned(roomName)
+    );
 
+    this.rooms = [];
     this.peeps = [];
     this.lobbyMessages = [];
 
     this.connection.start().then(() => this.connection.invoke("EnterLobby"));
   }
-
-  ngOnInit() {}
 
   ngOnDestroy() {
     // Unsubscribe the event handlers to avoid memory leak
@@ -53,65 +65,94 @@ export class LobbyComponent implements OnInit, OnDestroy {
     this.connection.off("UserLeft");
     this.connection.off("SetMessages");
     this.connection.off("RecieveMessage");
-    // TODO: Unsubscribe additional event handlers
+    this.connection.off("RoomCreated");
+    this.connection.on("SetRooms", (rooms) => this.setRooms(rooms));
+    this.connection.on("EnterRoom", (room) => this.enterRoom(room));
+    this.connection.off("RoomAbandoned");
 
     this.connection.stop();
   }
 
   recieveMessage(message: Message) {
+    console.log("receiveMessage lobby", message);
+
     this.lobbyMessages.splice(0, 0, message);
   }
 
   userEntered(user: User) {
-    // a szerver azt jelezte, hogy az aktuális szobába csatlakozott egy user. Ezt el kell
-    // tárolnunk a felhasználókat tároló tömbben.
+    // A new user entered the current room
+    console.log("userEntered lobby", user);
+
     this.peeps.push(user);
   }
 
   userLeft(userId: string) {
-    // a szerver azt jelezte, hogy a megadott ID-jú felhasználó elhagyta a szobát, így ki kell
-    // vennünk a felhasználót a felhasználók tömbjéből ID alapján.
-    delete this.peeps[userId];
+    // The user with the given ID left the room
+    console.log("userLeft lobby", userId);
+
+    const idx = this.peeps.findIndex((user) => user.id === userId);
+    this.peeps.splice(idx, 1);
+  }
+
+  setRooms(rooms: Room[]) {
+    console.log("setRooms lobby", rooms);
+
+    this.rooms = rooms;
   }
 
   setUsers(users: User[]) {
-    // A szerver belépés után leküldi nekünk a teljes user listát:
+    // After entering the lobby, the server sends the list of all users
+    console.log("setUsers lobby", users);
+
     this.peeps = users;
   }
 
   setMessages(messages: Message[]) {
-    // A szerver belépés után leküldi nekünk a korábban érkezett üzeneteket:
-    this.lobbyMessages = messages;
+    // After entering the lobby, the server sends the list of all messages
+    console.log("setMessages lobby", messages);
+
+    this.lobbyMessages = messages.reverse();
   }
 
   sendMessage() {
-    // A szervernek az invoke függvény meghívásával tudunk küldeni üzenetet.
+    console.log("sendMessage lobby");
+
     this.connection.invoke("SendMessageToLobby", this.chatMessage);
-    // A kérés szintén egy Promise, tehát feliratkoztathatnánk rá eseménykezelőt, ami akkor sül el, ha
-    // a szerver jóváhagyta a kérést (vagy esetleg hibára futott). A szerver egyes metódusai Task
-    // helyett Task<T>-vel is visszatérhetnek, ekkor a válasz eseménykezelőjében megkapjuk a válasz
-    // objektumot is:
-    // this.connection.invoke("SendMessageToLobby", this.chatMessage)
-    // .then((t: T) => {
-    // console.log(t);
-    // })
-    // .catch(console.error);
     this.chatMessage = "";
   }
 
   createRoom() {
-    // TODO: szoba létrehozása szerveren, majd navigáció a szoba útvonalára, szükség esetén megadni a passkey-t
+    console.log("createRoom lobby");
+
+    const newRoom: RoomDto = {
+      name: this.newRoomName,
+      passkey: this.newRoomPasskey,
+    };
+
+    this.connection
+      .invoke("CreateRoom", newRoom)
+      .catch(() => (this.duplicateRoomName = true));
+
+    this.newRoomName = "";
   }
 
   roomCreated(room: Room) {
-    // TODO: szobalista frissítése
+    console.log("roomCreated lobby", room);
+
+    this.rooms.push(room);
   }
 
   roomAbandoned(roomName: string) {
-    // TODO: szobalista frissítése
+    console.log("roomAbandoned lobby", roomName);
+
+    const idx = this.rooms.findIndex((room) => room.name === roomName);
+    this.rooms.splice(idx, 1);
   }
 
   enterRoom(room: Room) {
+    console.log("enterRoom lobby", room);
     // TODO: navigáció a szoba útvonlára, figyelve, hogy kell-e megadni passkey-t
+
+    this.router.navigate(["room", room.name]);
   }
 }

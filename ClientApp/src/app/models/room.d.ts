@@ -3,3 +3,8 @@ export interface Room {
   creationDate: string;
   requiresPasskey: boolean;
 }
+
+export interface RoomDto {
+  name: string;
+  passkey?: string;
+}

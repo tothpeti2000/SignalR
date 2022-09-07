@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "echo Hello && ng serve",
     "build": "ng build",
     "build:ssr": "ng run ChattR:server:dev",
     "test": "ng test",
@@ -22,6 +22,7 @@
     "@angular/platform-server": "8.2.12",
     "@angular/router": "8.2.12",
     "@microsoft/signalr": "^5.0.17",
+    "@ng-bootstrap/ng-bootstrap": "^5.3.1",
     "@nguniversal/module-map-ngfactory-loader": "8.1.1",
     "bootstrap": "^4.6.0",
     "core-js": "^3.8.3",
