@@ -16,7 +16,9 @@
     <input
       required
       class="form-control"
-      [class.is-invalid]="!passkeyField.valid && !passkeyField.pristine"
+      [class.is-invalid]="
+        (!passkeyField.valid || !passkeyValid) && passkeyField.touched
+      "
       placeholder="Enter the room passkey"
       [(ngModel)]="passkey"
       name="passkey"
@@ -24,14 +26,14 @@
       #passkeyField="ngModel"
     />
 
-    <div
-      [hidden]="passkeyField.valid || passkeyField.pristine"
-      class="invalid-feedback text-left m-1"
-    >
+    <div *ngIf="!passkeyField.valid" class="invalid-feedback text-left m-1">
       This field is required
     </div>
 
-    <div [hidden]="passkeyValid" class="invalid-feedback text-left m-1">
+    <div
+      *ngIf="passkeyField.valid && !passkeyValid"
+      class="invalid-feedback text-left m-1"
+    >
       Wrong password
     </div>
   </div>

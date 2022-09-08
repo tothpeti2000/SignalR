@@ -45,6 +45,7 @@ export class LobbyComponent implements OnDestroy {
     this.connection.on("RoomCreated", (room) => this.roomCreated(room));
     this.connection.on("SetRooms", (rooms) => this.setRooms(rooms));
     this.connection.on("EnterRoom", (room) => this.enterRoom(room));
+    this.connection.on("NavigateToRoom", (room) => this.navigateToRoom(room));
     this.connection.on("RoomAbandoned", (roomName) =>
       this.roomAbandoned(roomName)
     );
@@ -64,8 +65,9 @@ export class LobbyComponent implements OnDestroy {
     this.connection.off("SetMessages");
     this.connection.off("RecieveMessage");
     this.connection.off("RoomCreated");
-    this.connection.on("SetRooms", (rooms) => this.setRooms(rooms));
-    this.connection.on("EnterRoom", (room) => this.enterRoom(room));
+    this.connection.off("SetRooms");
+    this.connection.off("EnterRoom");
+    this.connection.off("NavigateToRoom");
     this.connection.off("RoomAbandoned");
 
     this.connection.stop();
@@ -152,7 +154,8 @@ export class LobbyComponent implements OnDestroy {
       .invoke("CheckRoomPasskey", passkeyData.roomName, passkeyData.passkey)
       .then((passkeyValid) => {
         if (passkeyValid) {
-          this.connection.invoke("EnterRoom", passkeyData.roomName);
+          this.modal.close();
+          this.navigateToRoom(passkeyData.roomName);
         } else {
           this.modal.passkeyValid = false;
         }
@@ -163,13 +166,13 @@ export class LobbyComponent implements OnDestroy {
     console.log("enterRoom lobby", room);
 
     if (!room.requiresPasskey) {
-      this.connection.invoke("EnterRoom", room.name);
+      this.navigateToRoom(room.name);
     } else {
-      this.modal.openModal(room);
+      this.modal.open(room);
     }
   }
 
-  navigateToRoom(room: Room) {
-    this.router.navigate(["room", room.name]);
+  navigateToRoom(roomId: string) {
+    this.router.navigate(["room", roomId]);
   }
 }

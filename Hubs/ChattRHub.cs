@@ -112,7 +112,7 @@ namespace ChattR.Hubs
                 .RoomCreated(createdRoom);
 
             await Clients.Caller
-                .NavigateToRoom(createdRoom);
+                .NavigateToRoom(createdRoom.Name);
         }
 
         public async Task<bool> CheckRoomPasskey(string roomId, string passkey)

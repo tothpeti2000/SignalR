@@ -20,9 +20,13 @@ export class PasskeyModalComponent {
 
   @ViewChild("modal", { static: false }) modal: any;
 
-  openModal(room: Room) {
+  open(room: Room) {
     this.roomName = room.name;
     this.modalService.open(this.modal);
+  }
+
+  close() {
+    this.modalService.dismissAll();
   }
 
   checkPasskey() {
