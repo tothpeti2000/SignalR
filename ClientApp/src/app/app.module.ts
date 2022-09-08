@@ -16,6 +16,7 @@ import { LobbyComponent } from "./lobby/lobby.component";
 import { ChatStreamComponent } from "./chat-stream/chat-stream.component";
 import { RoomComponent } from "./room/room.component";
 import { ToastComponent } from "./toast/toast.component";
+import { PasskeyModalComponent } from './passkey-modal/passkey-modal.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { ToastComponent } from "./toast/toast.component";
     ChatStreamComponent,
     RoomComponent,
     ToastComponent,
+    PasskeyModalComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: "ng-cli-universal" }),

@@ -111,9 +111,14 @@ namespace ChattR.Hubs
             await Clients.Group(LobbyName)
                 .RoomCreated(createdRoom);
 
-            // TODO: Check navigation
             await Clients.Caller
-                .EnterRoom(createdRoom);
+                .NavigateToRoom(createdRoom);
+        }
+
+        public async Task<bool> CheckRoomPasskey(string roomId, string passkey)
+        {
+            var room = Rooms[roomId];
+            return room.Passkey == passkey;
         }
 
         public async Task EnterRoom(string roomName)

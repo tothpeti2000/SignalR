@@ -59,9 +59,13 @@
               <li
                 *ngFor="let room of rooms"
                 (click)="enterRoom(room)"
-                class="list-group-item room-list-item"
+                class="list-group-item room-list-item btn"
               >
                 {{ room.name }}
+
+                <div *ngIf="room.requiresPasskey">
+                  <i class="bi bi-lock-fill"></i>
+                </div>
               </li>
             </ng-container>
           </ul>
@@ -131,3 +135,8 @@
     </div>
   </div>
 </div>
+
+<app-passkey-modal
+  #passkeyModal
+  (passkeyEntered)="checkRoomPasskey($event)"
+></app-passkey-modal>

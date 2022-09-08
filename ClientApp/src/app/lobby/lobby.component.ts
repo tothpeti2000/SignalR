@@ -1,9 +1,9 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component, OnDestroy, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import * as signalR from "@microsoft/signalr";
 import { Message, Room, User } from "../models";
 import { RoomDto } from "../models/room";
-import { AlertService } from "../services/alert.service";
+import { PasskeyData } from "../passkey-modal";
 import { HubBuilderService } from "../services/hub-builder.service";
 
 @Component({
@@ -29,11 +29,9 @@ export class LobbyComponent implements OnDestroy {
 
   connection: signalR.HubConnection;
 
-  constructor(
-    private hubBuilder: HubBuilderService,
-    private router: Router,
-    private alertService: AlertService
-  ) {
+  @ViewChild("passkeyModal", { static: false }) modal: any;
+
+  constructor(private hubBuilder: HubBuilderService, private router: Router) {
     this.connection = this.hubBuilder.getConnection();
 
     // Register the server-sent event handlers
@@ -149,10 +147,29 @@ export class LobbyComponent implements OnDestroy {
     this.rooms.splice(idx, 1);
   }
 
+  checkRoomPasskey(passkeyData: PasskeyData) {
+    this.connection
+      .invoke("CheckRoomPasskey", passkeyData.roomName, passkeyData.passkey)
+      .then((passkeyValid) => {
+        if (passkeyValid) {
+          this.connection.invoke("EnterRoom", passkeyData.roomName);
+        } else {
+          this.modal.passkeyValid = false;
+        }
+      });
+  }
+
   enterRoom(room: Room) {
     console.log("enterRoom lobby", room);
-    // TODO: navigáció a szoba útvonlára, figyelve, hogy kell-e megadni passkey-t
 
+    if (!room.requiresPasskey) {
+      this.connection.invoke("EnterRoom", room.name);
+    } else {
+      this.modal.openModal(room);
+    }
+  }
+
+  navigateToRoom(room: Room) {
     this.router.navigate(["room", room.name]);
   }
 }

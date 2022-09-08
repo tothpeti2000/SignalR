@@ -1,5 +1,15 @@
+li.room-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 li.room-list-item:hover {
-  cursor: pointer;
   background-color: #efefef;
   transition: 200ms ease-out;
+}
+
+li.room-list-item i {
+  width: 2rem;
+  height: 2rem;
 }

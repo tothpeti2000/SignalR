@@ -1,0 +1,48 @@
+<ng-template #modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Enter {{ roomName }}</h4>
+
+    <button
+      type="button"
+      class="btn btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss()"
+    >
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <input
+      required
+      class="form-control"
+      [class.is-invalid]="!passkeyField.valid && !passkeyField.pristine"
+      placeholder="Enter the room passkey"
+      [(ngModel)]="passkey"
+      name="passkey"
+      id="passkey"
+      #passkeyField="ngModel"
+    />
+
+    <div
+      [hidden]="passkeyField.valid || passkeyField.pristine"
+      class="invalid-feedback text-left m-1"
+    >
+      This field is required
+    </div>
+
+    <div [hidden]="passkeyValid" class="invalid-feedback text-left m-1">
+      Wrong password
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+      Cancel
+    </button>
+
+    <button type="button" class="btn btn-primary" (click)="checkPasskey()">
+      Save
+    </button>
+  </div>
+</ng-template>
